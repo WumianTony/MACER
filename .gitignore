@@ -1,6 +1,6 @@
 # Project (protecting sensitive data)
-build
-cache
+.cache
+.debug
 private.json
 
 # Prerequisites
