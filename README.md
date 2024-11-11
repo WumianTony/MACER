@@ -5,11 +5,21 @@ Mumu Assisting Code Exploiting Ragnarok Online: X
 
 ### 底层
 - [ ] 将 demo 重构成 cpp
+    - [x] config
+    - [ ] logger
+    - [ ] system
+        - [ ] windows 残留内容
+        - [ ] mumu 迁移内容
+    - [ ] visual
+    - [ ] main
 - [ ] 加入启动项（以后通过启动项控制执行内容）
 - [ ] 学习 Mumu ADB 并替换 windows 操控侧的所有内容
 - [ ] 加入步骤检测（完成之前先检测是否已完成）
 - [ ] 加入断点（记录每天没完成的日常）
 - [ ] 学习 Github API，额外写一个版本管理工具
+- [ ] 单开一个文档存待办（顺便当更新日志了）
+- [ ] 好好重写一份 readme，把使用方法写清楚
+- [ ] 考虑跨平台兼容
 
 ### 功能
 - [ ] 加入自动采集

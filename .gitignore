@@ -1,7 +1,7 @@
 # Project (protecting sensitive data)
 .cache
 .debug
-private.json
+.vscode
 
 # Prerequisites
 *.d
