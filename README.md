@@ -8,7 +8,7 @@ Mumu Assisting Code Exploiting Ragnarok Online: X
     - [x] config
     - [ ] logger
     - [ ] system
-        - [ ] windows 残留内容
+        - [x] windows 残留内容
         - [ ] mumu 迁移内容
     - [ ] visual
     - [ ] main
