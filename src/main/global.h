@@ -4,7 +4,12 @@
 #include "config.h"
 #include "logger.h"
 
-#define CFG Config::getInstance()
-#define LOG Logger::getInstance()
+namespace Config = Macer::Class::Config;
+namespace Logger = Macer::Class::Logger;
+namespace Mumu   = Macer::Platf::Mumu;
+namespace System = Macer::Platf::System;
+
+#define gCfg Config::getInstance()
+#define gLog Logger::getInstance()
 
 #endif /* A51D1620_27C8_49B9_8DE5_650E276861EB */

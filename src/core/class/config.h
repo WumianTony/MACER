@@ -5,6 +5,8 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
+namespace Macer {
+namespace Class {
 class Config {
   
 public:
@@ -90,5 +92,7 @@ private:
         }
     };
 };
+}
+}
 
 #endif /* DAFF9627_8D19_431D_9B7F_1DE35557CB07 */

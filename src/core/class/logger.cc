@@ -5,8 +5,11 @@
 #include "global.h"
 #include "system.h"
 
+namespace Macer {
+namespace Class {
+
 Logger::Logger(const std::string& path, Level level, Callback callback) : logLevel(level), logCallback(callback) {
-    std::string folder = cfg.path.cache.log
+    std::string folder = gCfg.path.cache.log
     std::string latest = folder + "/latest.log";
     std::string oldlog = System::getCreateTime(latest) + ".log";
     System::renameFile(latest, oldlog);
@@ -16,9 +19,24 @@ Logger::Logger(const std::string& path, Level level, Callback callback) : logLev
     }
 }
 
-Logger& Logger::getInstance(const std::string& filename, Level level, Callback callback) {
-    static Logger instance(filename, level, callback); // 局部静态变量，保证只创建一次
-    return instance;
+// Logger& Logger::getInstance(const std::string& filename, Level level, Callback callback) {
+//     static Logger instance(filename, level, callback); // 局部静态变量，保证只创建一次
+//     return instance;
+// }
+
+Logger& Logger::getInstance() {
+    if (instance == nullptr) {
+        throw std::runtime_error("Logger 实例尚未创建");
+    }
+    return *instance;
+}
+
+void Logger::createInstance(const std::string& filename, Level level, Callback callback) {
+    if (instance == nullptr) {
+        instance = new Logger(filename, level, callback);
+    } else {
+        std::cerr << "Logger 实例已经创建过，无法创建" << std::endl;
+    }
 }
 
 void Logger::setLogLevel(Level level) {
@@ -74,4 +92,7 @@ std::string Logger::formatLogMessage(Level level, const std::string& message) {
     char buffer[64];
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
     return "[" + std::string(buffer) + "][" + levelStr + "] " + message;
+}
+
+}
 }

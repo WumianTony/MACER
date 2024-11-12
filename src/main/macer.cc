@@ -1,3 +1,9 @@
 #include "global.h"
 
-LOG(CFG.path.cache.log);
+Utils::Logger::createInstance(
+    gCfg.path.cache.log, 
+    Utils::Logger::Level::kDebug, 
+    [](const std::string& message) {
+        std::cerr << message << std::endl;
+    }
+);

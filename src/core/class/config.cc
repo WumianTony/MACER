@@ -5,6 +5,8 @@
 #include "logger.h"
 #include "system.h"
 
+namespace Macer {
+namespace Class {
 using json = nlohmann::json;
 
 static json load(const char* path) {
@@ -72,4 +74,6 @@ void Config::printDebugMessage() {
         PRINT_CONFIG(path.resource.images)
     ;
 #undef PRINT_CONFIG
+}
+}
 }

@@ -7,12 +7,15 @@
 #include <functional>
 #include <mutex>
 
+namespace Macer {
+namespace Class {
 class Logger {
-
+    
 public:
     using Callback = std::function<void(const std::string&)>;
     // 日志级别枚举
     enum class Level {
+        kNone = 0,
         kTrace,
         kDebug,
         kInfo,
@@ -22,9 +25,14 @@ public:
     };
 
     // 单例
-    static Logger& getInstance(const std::string& path, Level level = Level::kInfo, Callback callback = nullptr);
-
-    // 删除复制构造函数和赋值操作符
+    static Logger& getInstance();
+    static void createInstance( // 初始化单例
+        const std::string& path, 
+        Level level = Level::kInfo, 
+        Callback callback = nullptr
+    );
+    
+    // 删除复制构造函数 & 赋值操作符
     Logger(const Logger&) = delete;
     Logger& operator=(const Logger&) = delete;
 
@@ -44,6 +52,7 @@ private:
     Level logLevel;
     Callback logCallback;
     std::mutex logMutex;
+    static Logger* instance = nullptr;
 
     // 私有构造函数
     Logger(const std::string& filename, Level level, Callback callback);
@@ -55,5 +64,7 @@ private:
     // 消息格式化
     std::string formatLogMessage(Level level, const std::string& message);
 };
+}
+}
 
 #endif /* E71DC334_1E8F_4B5E_959F_A573A861CA95 */

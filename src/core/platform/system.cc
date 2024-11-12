@@ -3,6 +3,8 @@
 #include <filesystem>
 #include "logger.h"
 
+namespace Macer {
+namespace Platf {
 namespace System {
 namespace fs = std::filesystem;
 
@@ -72,5 +74,8 @@ void renameFile(const std::string& path, const std::string& name) {
     }
     std::string new_path = fs::path(path).parent_path().string() + "/" + name;
     fs::rename(path, new_path);
+}
+
+}
 }
 }
