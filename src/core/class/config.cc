@@ -43,13 +43,12 @@ Config::Config() {
         path.loadLocals();
 
     } catch (...) {
-        // TODO: 日志报错
-        std::cout << "Error occured when loading config." << std::endl;
+        std::cerr << "配置加载出现问题" << std::endl;
         exit(1);
     }
 }
 
-Config& Config::get() {
+Config& Config::getInstance() {
     static Config instance;
     return instance;
 }
@@ -57,7 +56,7 @@ Config& Config::get() {
 void Config::printDebugMessage() {
 #define PRINT_CONFIG(x) << #x" = " << c.x << std::endl
     const auto& c = get();
-    std::cout << "Config: " << std::endl
+    std::cerr << "Config: " << std::endl
         PRINT_CONFIG(time.rox_start)
         PRINT_CONFIG(time.login)
         PRINT_CONFIG(time.loading)

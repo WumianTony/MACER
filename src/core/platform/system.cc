@@ -38,6 +38,21 @@ std::vector<std::string> getFiles(const std::string& path) {
     return files;
 }
 
+std::string getCreateTime(const std::string& path) {
+    if (!fs::exists(path)) {
+        std::cerr << "路径不存在：" << path << std::endl;
+        return "";
+    }
+    // 文件创建时间
+    std::time_t createTime = fs::last_write_time(path);
+    // 转换为本地时间
+    std::tm* localTime = std::localtime(&createTime);
+    // 格式化为 YYYY-MM-DD-HH-MM-SS
+    std::stringstream ss;
+    ss << std::put_time(localTime, "%Y-%m-%d-%H-%M-%S");
+    return ss.str();
+}
+
 void createPath(const std::string& path) {
     if (!fs::exists(path)) {
         fs::create_directories(path);
@@ -48,5 +63,14 @@ void createPath(const std::vector<std::string>& paths) {
     for (const auto& path : paths) {
         createPath(path);
     }
+}
+
+void renameFile(const std::string& path, const std::string& name) {
+    if (!fs::exists(path)) {
+        std::cerr << "路径不存在：" << path << std::endl;
+        return;
+    }
+    std::string new_path = fs::path(path).parent_path().string() + "/" + name;
+    fs::rename(path, new_path);
 }
 }

@@ -8,7 +8,7 @@
 class Config {
   
 public:
-    static Config& get(); // 单例
+    static Config& getInstance(); // 单例
     static void printDebugMessage(); // 打印所有配置
     
     struct { // path
@@ -59,13 +59,13 @@ public:
         int rox_start;
         int login;
         int loading;
-        
+        // 解析
         inline void parse(json j) {
             this.rox_start = j["time"]["rox_start"];
             this.login = j["time"]["login"];
             this.loading = j["time"]["loading"];
         }
-        
+        // 打包
         inline json parse() {
             return {
                 "time", {
@@ -79,6 +79,7 @@ public:
 
 private:
     Config();
+    // 默认路径与配置
     static constexpr char kDirPath[] = "/config";
     static constexpr char kCfgPath[] = "/config/config.json";
     static constexpr json kDefault = {
