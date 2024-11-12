@@ -6,7 +6,7 @@ Mumu Assisting Code Exploiting Ragnarok Online: X
 ### 底层
 - [ ] 将 demo 重构成 cpp
     - [x] config
-    - [ ] logger
+    - [x] logger
     - [ ] system
         - [x] windows 残留内容
         - [ ] mumu 迁移内容
