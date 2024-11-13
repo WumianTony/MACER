@@ -9,8 +9,8 @@
 
 namespace Macer {
 namespace Class {
-class Logger {
     
+class Logger {
 public:
     using Callback = std::function<void(const std::string&)>;
     // 日志级别枚举
@@ -63,8 +63,9 @@ private:
     
     // 消息格式化
     std::string formatLogMessage(Level level, const std::string& message);
-};
-}
-}
+    
+}; // class Logger
+} // namespace Class
+} // namespace Macer
 
 #endif /* E71DC334_1E8F_4B5E_959F_A573A861CA95 */

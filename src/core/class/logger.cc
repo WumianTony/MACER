@@ -94,5 +94,5 @@ std::string Logger::formatLogMessage(Level level, const std::string& message) {
     return "[" + std::string(buffer) + "][" + levelStr + "] " + message;
 }
 
-}
-}
+} // namespace Class
+} // namespace Macer
