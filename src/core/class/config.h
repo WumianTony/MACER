@@ -3,81 +3,83 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <nlohmann/json.hpp>
 
 namespace Macer {
 namespace Class {
+using json = nlohmann::json;
+
 class Config {
-  
 public:
     static Config& getInstance(); // 单例
     static void printDebugMessage(); // 打印所有配置
     
-    struct { // path
+    using umap_s_to_s = std::unordered_map<std::string, std::string>;
+    struct Path {
         std::string self;
         // std::string rox;
-        std::string mumu;
+        struct Mumu {
+            std::string manager;
+            std::string screenshot;
+        } mumu;
 
-        struct { // cache
+        struct Cache {
             std::string self;
             std::string log;
             std::string data;
             std::string image;
-            std::vector<std::string> images;
+            umap_s_to_s images;
         } cache;
         
-        struct { // resource
+        struct Resource {
             std::string self;
             std::string image;
-            std::vector<std::string> images;
+            umap_s_to_s images;
         } resource;
 
-        inline void loadLocals() {
-            this.self = System::getLocalPath();
-            // this.rox = System::getFilePath("RagnarokX.exe")
-            this.mumu = System::getFilePath("MumuManager.exe")
-            this.cache.self = this.self + "./cache";
-            this.cache.log = this.cache.self + "/log";
-            this.cache.data = this.cache.self + "/data";
-            this.cache.image = this.cache.self + "/image";
-            this.cache.images = System::getFiles(this.cache.image);
-            this.resource.self = this.self + "./resource";
-            this.resource.image = this.resource.self + "/image";
-            this.resource.images = System::getFiles(this.resource.image);
-            if (!System::isPathValid(this.cache.self)) {
-                System::createPath({
-                    this.cache.self,
-                    this.cache.log,
-                    this.cache.data,
-                    this.cache.image,
-                    this.resource.self,
-                    this.resource.image
-                });
-            }
-        };
+        void loadLocals();
     } path;
     
-    struct { // time
+    struct Time {
         int rox_start;
         int login;
         int loading;
-        // 解析
-        inline void parse(json j) {
-            this.rox_start = j["time"]["rox_start"];
-            this.login = j["time"]["login"];
-            this.loading = j["time"]["loading"];
-        }
-        // 打包
-        inline json parse() {
-            return {
-                "time", {
-                    {"rox_start", this.rox_start},
-                    {"login", this.login},
-                    {"loading", this.loading}
-                }
-            };
-        }
+
+        void parse(const json& j);
+        json dump() const;
     } time;
+
+    struct Mumu {
+        std::string package;
+        int device;
+
+        void parse(const json& j);
+        json dump() const;
+    } mumu;
+
+    struct Option {
+        bool debug;
+        bool daily;
+        bool grind;
+        bool market;
+        // int device;
+        
+        // enum class Platform {
+        //     kWindows = 0,
+        //     kMumu
+        // } platform;
+        
+        enum class Profession {
+            kNone = 0,
+            kFarm,
+            kFish,
+            kMine
+        } profession;
+        
+        void loadDefault();
+        void parse(int argc, char** argv);
+    } option;
 
 private:
     Config();
@@ -85,14 +87,20 @@ private:
     static constexpr char kDirPath[] = "/config";
     static constexpr char kCfgPath[] = "/config/config.json";
     static constexpr json kDefault = {
-        "time", {
-            {"rox_start", 21},
-            {"login", 3},
-            {"loading", 5}
-        }
+        {"time", {
+            {"mumu_start", 10},
+            {"rox_start", 25},
+            {"login", 5},
+            {"loading", 10}
+        }},
+        {"mumu", {
+            {"package", "com.zlongame.cn.ro"},
+            {"device", 0}
+        }}
     };
-};
-}
-}
+    
+}; // class Config
+} // namespace Class
+} // namespace Macer
 
 #endif /* DAFF9627_8D19_431D_9B7F_1DE35557CB07 */
