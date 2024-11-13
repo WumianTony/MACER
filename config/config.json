@@ -1,7 +1,13 @@
 {
     "time": {
-        "rox_start": 21,
-        "login": 3,
-        "loading": 5
+        "mumu_start": 10,
+        "rox_start": 25,
+        "login": 5,
+        "loading": 10
+    },
+
+    "mumu": {
+        "package": "com.zlongame.cn.ro",
+        "device": 0
     }
 }

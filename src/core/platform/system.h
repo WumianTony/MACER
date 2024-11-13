@@ -19,8 +19,10 @@ namespace System {
     void createPath(const std::vector<std::string>& paths);
     void renameFile(const std::string& path, const std::string& name);
 
-}
-}
-}
+    void sleep(int second);
+
+} // namespace System
+} // namespace Platf
+} // namespace Macer
 
 #endif /* D9DA99CB_DCA4_46AB_9F04_31D8E80935DA */

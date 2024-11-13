@@ -1,6 +1,7 @@
 #include "system.h"
 
 #include <filesystem>
+#include <windows.h>
 #include "logger.h"
 
 namespace Macer {
@@ -76,6 +77,10 @@ void renameFile(const std::string& path, const std::string& name) {
     fs::rename(path, new_path);
 }
 
+void sleep(int second) {
+    Sleep(second * 1000);
 }
-}
-}
+
+} // namespace System
+} // namespace Platf
+} // namespace Macer
