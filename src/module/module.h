@@ -2,7 +2,7 @@
 #define FC9391E8_3E0C_4466_B705_6D22DC0639A8
 
 namespace Macer {
-namespace Module {
+namespace Modul {
 namespace Login {
 
     void run ();

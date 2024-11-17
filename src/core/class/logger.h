@@ -52,7 +52,7 @@ private:
     Level logLevel;
     Callback logCallback;
     std::mutex logMutex;
-    static Logger* instance = nullptr;
+    static Logger* instance;
 
     // 私有构造函数
     Logger(const std::string& filename, Level level, Callback callback);

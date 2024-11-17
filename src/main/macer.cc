@@ -1,12 +1,14 @@
 #include "global.h"
 
+#include <iostream>
+
 void _init(int argc, char** argv) {
     gCfg.option.parse(argc, argv);
-    Logger::createInstance(
+    gLogger::createInstance(
         gCfg.path.cache.log, 
         gCfg.option.debug 
-        ? Logger::Level::kDebug 
-        : Logger::Level::kInfo, 
+        ? gLogger::Level::kDebug 
+        : gLogger::Level::kInfo, 
         [](const std::string& message) {
             std::cerr << message << std::endl;
         }
@@ -14,6 +16,7 @@ void _init(int argc, char** argv) {
 }
 
 void _execute() {
+    gLogin::run();
     if (gCfg.option.daily) {
         // TODO: 调用 daily 入口
     }
@@ -24,9 +27,10 @@ void _execute() {
 }
 
 int main(int argc, char* argv[]) {
+    std::cout << "test\n";
     _init(argc, argv);
-    gLog.info("开始");
+    gLog.info("Start");
     _execute();
-    gLog.info("结束");
+    gLog.info("Finish");
     return 0;
 }

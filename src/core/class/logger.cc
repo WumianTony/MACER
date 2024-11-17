@@ -8,14 +8,16 @@
 namespace Macer {
 namespace Class {
 
+Logger* Logger::instance = nullptr;
+
 Logger::Logger(const std::string& path, Level level, Callback callback) : logLevel(level), logCallback(callback) {
-    std::string folder = gCfg.path.cache.log
+    std::string folder = gCfg.path.cache.log;
     std::string latest = folder + "/latest.log";
-    std::string oldlog = System::getCreateTime(latest) + ".log";
-    System::renameFile(latest, oldlog);
-    logFile(latest, std::ios::app);
+    std::string oldlog = gSystem::getCreateTime(latest) + ".log";
+    gSystem::renameFile(latest, oldlog);
+    logFile.open(latest, std::ios::app);
     if (!logFile.is_open()) {
-        std::cerr << "打不开日志：" << latest << std::endl;
+        std::cerr << "Log not found: " << latest << std::endl;
     }
 }
 
@@ -26,7 +28,7 @@ Logger::Logger(const std::string& path, Level level, Callback callback) : logLev
 
 Logger& Logger::getInstance() {
     if (instance == nullptr) {
-        throw std::runtime_error("Logger 实例尚未创建");
+        throw std::runtime_error("Logger instance not found");
     }
     return *instance;
 }
@@ -35,7 +37,7 @@ void Logger::createInstance(const std::string& filename, Level level, Callback c
     if (instance == nullptr) {
         instance = new Logger(filename, level, callback);
     } else {
-        std::cerr << "Logger 实例已经创建过，无法创建" << std::endl;
+        std::cerr << "Logger already exist" << std::endl;
     }
 }
 
@@ -90,7 +92,9 @@ std::string Logger::formatLogMessage(Level level, const std::string& message) {
     }
     std::time_t now = std::time(nullptr);
     char buffer[64];
-    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+    std::tm local_tm;
+    localtime_s(&local_tm, &now);
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local_tm);
     return "[" + std::string(buffer) + "][" + levelStr + "] " + message;
 }
 

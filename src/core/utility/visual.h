@@ -1,7 +1,10 @@
 #ifndef AB214A28_73CF_440A_AFE1_FDF721098936
 #define AB214A28_73CF_440A_AFE1_FDF721098936
 
-#include <opencv2/opencv.hpp>
+// #include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 namespace Macer {
 namespace Utils {

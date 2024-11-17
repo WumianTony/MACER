@@ -1,15 +1,16 @@
 #include "mumu.h"
-#include "global.h"
 
 #include <cstdio>
 #include <sstream>
+#include <memory>
+#include <process.h>
+#include "global.h"
 
 namespace Macer {
 namespace Platf {
 namespace Mumu {
 
 // 递归拆解
-template<>
 void _append(std::stringstream& ss) {
     return; // 递归终止
 }
@@ -37,16 +38,17 @@ std::string _MumuManager_Full(Args... args) {
 
     std::array<char, 128> buffer;
     std::string output;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.str().c_str(), "r"), pclose);
+    std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd.str().c_str(), "r"), _pclose);
     if (!pipe) {
-        gLog.error("Popen 失败了");
+        gLog.error("Popen failed");
         return "";
     }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+    while (fgets(buffer.data(), static_cast<size_t>(buffer.size()), pipe.get()) != nullptr) {
         output += buffer.data();
     }
     return output;
 }
+
 
 // mumumanager api -v 0 player_state
 bool isRunning() {
@@ -85,7 +87,7 @@ void screenshot() {
 
 // mumumanager adb -v 0 -c "shell input tap X Y"
 void click(int x, int y) {
-    _MumuManager("adb -v", gCfg.mumu.device, "shell input tap", x, y)
+    _MumuManager("adb -v", gCfg.mumu.device, "shell input tap", x, y);
 }
 
 } // namespace Mumu

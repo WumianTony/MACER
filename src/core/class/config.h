@@ -42,6 +42,7 @@ public:
     } path;
     
     struct Time {
+        int mumu_start;
         int rox_start;
         int login;
         int loading;
@@ -78,7 +79,7 @@ public:
         } profession;
         
         void loadDefault();
-        void parse(int argc, char** argv);
+        void parse(int argc, const char* const* argv);
     } option;
 
 private:
@@ -86,18 +87,8 @@ private:
     // 默认路径与配置
     static constexpr char kDirPath[] = "/config";
     static constexpr char kCfgPath[] = "/config/config.json";
-    static constexpr json kDefault = {
-        {"time", {
-            {"mumu_start", 10},
-            {"rox_start", 25},
-            {"login", 5},
-            {"loading", 10}
-        }},
-        {"mumu", {
-            {"package", "com.zlongame.cn.ro"},
-            {"device", 0}
-        }}
-    };
+    static json kDefault;
+    static void printConfig();
     
 }; // class Config
 } // namespace Class

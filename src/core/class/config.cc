@@ -2,11 +2,23 @@
 
 #include <iostream>
 #include <fstream>
-#include "logger.h"
-#include "system.h"
+#include "global.h"
 
 namespace Macer {
 namespace Class {
+
+json Config::kDefault = {
+    {"time", {
+        {"mumu_start", 10},
+        {"rox_start", 25},
+        {"login", 5},
+        {"loading", 10}
+    }},
+    {"mumu", {
+        {"package", "com.zlongame.cn.ro"},
+        {"device", 0}
+    }}
+};
 
 json _load(const char* path) {
     std::ifstream fin(path);
@@ -27,10 +39,10 @@ void _save(const char* path, const json j) {
 
 Config::Config() {
     try {
-        json j = kdefault;
+        json j = kDefault;
         // 创建配置并保存
-        if (!System::isPathValid(kDirPath)) {
-            System::createPath(kDirPath);
+        if (!gSystem::isPathValid(kDirPath)) {
+            gSystem::createPath(kDirPath);
             _save(kCfgPath, j);
         } else { // 更新配置，有更改就保存
             json user_j = _load(kCfgPath);
@@ -55,9 +67,24 @@ Config& Config::getInstance() {
     return instance;
 }
 
+template<typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const std::unordered_map<K, V>& map) {
+    os << "{";
+    bool isFirst = true;
+    for (const auto& pair : map) {
+        if (!isFirst) {
+            os << ", ";
+        }
+        os << pair.first << ": " << pair.second;
+        isFirst = false;
+    }
+    os << "}";
+    return os;
+}
+
 void Config::printDebugMessage() {
 #define PRINT_CONFIG(x) << #x" = " << c.x << std::endl
-    const auto& c = get();
+    const auto& c = Config::getInstance();
     std::cerr << "Config: " << std::endl
         PRINT_CONFIG(time.rox_start)
         PRINT_CONFIG(time.login)
@@ -77,10 +104,10 @@ void Config::printDebugMessage() {
 }
 
 void Config::Path::loadLocals() {
-    this->self = System::getLocalPath();
-    // this->rox = System::getFilePath("RagnarokX.exe")
-    this->mumu.manager = System::getFilePath("MumuManager.exe")
-    this->mumu.screenshot = "/sdcard/screenshot.png"
+    this->self = gSystem::getLocalPath();
+    // this->rox = gSystem::getFilePath("RagnarokX.exe");
+    this->mumu.manager = gSystem::getFilePath("MumuManager.exe");
+    this->mumu.screenshot = "/sdcard/screenshot.png";
     this->cache.self = this->self + "./cache";
     this->cache.log = this->cache.self + "/log";
     this->cache.data = this->cache.self + "/data";
@@ -88,9 +115,9 @@ void Config::Path::loadLocals() {
     this->cache.images["screenshot"] = this->cache.image + "/screenshot.png";
     this->resource.self = this->self + "./resource";
     this->resource.image = this->resource.self + "/image";
-    this->resource.images = System::getFiles(this->resource.image);
-    if (!System::isPathValid(this->cache.self)) {
-        System::createPath({
+    this->resource.images = gSystem::getFiles(this->resource.image);
+    if (!gSystem::isPathValid(this->cache.self)) {
+        gSystem::createPath({
             this->cache.self,
             this->cache.log,
             this->cache.data,
@@ -102,6 +129,7 @@ void Config::Path::loadLocals() {
 }
 
 void Config::Time::parse(const json& j) {
+    this->mumu_start = j["mumu_start"];
     this->rox_start = j["rox_start"];
     this->login = j["login"];
     this->loading = j["loading"];
@@ -110,6 +138,7 @@ void Config::Time::parse(const json& j) {
 json Config::Time::dump() const {
     return {
         "time", {
+            {"mumu_start", this->mumu_start},
             {"rox_start", this->rox_start},
             {"login", this->login},
             {"loading", this->loading}
@@ -140,13 +169,10 @@ json Config::Mumu::dump() const {
 //      -grind true   /false
 // 待定 -mrket true   /false
 bool _strToBool(const std::string& value) {
-    if (value == "true") {
-        return true;
-    }
-    return false;
+    return value == "true";
 }
 
-void Option::loadDefault() {
+void Config::Option::loadDefault() {
     this->debug = false;
     this->daily = true;
     this->grind = true;
@@ -154,7 +180,7 @@ void Option::loadDefault() {
     this->profession = Profession::kNone;
 }
 
-void Option::parse(int argc, char** argv) {
+void Config::Option::parse(int argc, const char* const* argv) {
     for (int i = 1; i + 1 < argc; i += 2) {
         std::string key = argv[i], value = argv[i + 1];
         if (key == "-debug") {

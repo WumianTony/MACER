@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Macer {
 namespace Platf {
@@ -12,7 +13,8 @@ namespace System {
 
     std::string getLocalPath();
     std::string getFilePath(const std::string& file);
-    std::vector<std::string> getFiles(const std::string& path);
+    std::unordered_map<std::string, std::string> getFiles(const std::string& path);
+    // std::string getCloseTime(const std::string& path);
     std::string getCreateTime(const std::string& path);
 
     void createPath(const std::string& path);

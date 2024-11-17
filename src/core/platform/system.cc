@@ -1,8 +1,12 @@
 #include "system.h"
 
+// #include <chrono>
 #include <filesystem>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <windows.h>
-#include "logger.h"
+#include "global.h"
 
 namespace Macer {
 namespace Platf {
@@ -31,29 +35,74 @@ std::string getFilePath(const std::string& file) {
     return {}; // 找不到返回空路径
 }
 
-std::vector<std::string> getFiles(const std::string& path) {
-    std::vector<std::string> files;
+std::unordered_map<std::string, std::string> getFiles(const std::string& path) {
+    std::unordered_map<std::string, std::string> files;
     for (const auto& e : fs::directory_iterator(path)) {
         if (e.is_regular_file()) {
-            files.push_back(e.path().string());
+            files[e.path().stem().string()] = e.path().string();
         }
     }
     return files;
 }
 
+// std::string getCloseTime(const std::string& path) {
+//     if (!fs::exists(path)) {
+//         std::cerr << "路径不存在：" << path << std::endl;
+//         return "";
+//     }
+//     // 文件关闭时间
+//     auto last_write_time_ns = fs::last_write_time(path);
+//     auto last_write_time_tp = std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds>(last_write_time_ns);
+//     std::time_t last_edit = std::chrono::system_clock::to_time_t(last_write_time_tp);
+//     // 转换为本地时间
+//     std::tm local_tm;
+//     localtime_s(&local_tm, &last_edit);
+//     // 格式化为 YYYY-MM-DD-HH-MM-SS
+//     std::stringstream ss;
+//     ss << std::put_time(&local_tm, "%Y-%m-%d-%H-%M-%S");
+//     return ss.str();
+// }
+
+std::string _formatFileTime(const FILETIME& ft) {
+    SYSTEMTIME st;
+    FileTimeToSystemTime(&ft, &st);
+
+    std::stringstream ss;
+    ss << std::setfill('0')
+       << std::setw(4) << st.wYear << "-"
+       << std::setw(2) << st.wMonth << "-"
+       << std::setw(2) << st.wDay << " "
+       << std::setw(2) << st.wHour << ":"
+       << std::setw(2) << st.wMinute << ":"
+       << std::setw(2) << st.wSecond;
+    return ss.str();
+}
+
 std::string getCreateTime(const std::string& path) {
-    if (!fs::exists(path)) {
-        std::cerr << "路径不存在：" << path << std::endl;
+    HANDLE h = CreateFile(
+        path.c_str(),
+        GENERIC_READ,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        NULL,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL
+    );
+
+    if (h == INVALID_HANDLE_VALUE) {
+        std::cerr << "Unable to open file" << std::endl;
         return "";
     }
-    // 文件创建时间
-    std::time_t createTime = fs::last_write_time(path);
-    // 转换为本地时间
-    std::tm* localTime = std::localtime(&createTime);
-    // 格式化为 YYYY-MM-DD-HH-MM-SS
-    std::stringstream ss;
-    ss << std::put_time(localTime, "%Y-%m-%d-%H-%M-%S");
-    return ss.str();
+
+    FILETIME create_time, exit_time, kernel_time;
+    if (!GetFileTime(h, &create_time, &exit_time, &kernel_time)) {
+        CloseHandle(h);
+        std::cerr << "Unable to get file time" << std::endl;
+        return "";
+    }
+
+    CloseHandle(h);
+    return _formatFileTime(create_time);
 }
 
 void createPath(const std::string& path) {

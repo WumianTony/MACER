@@ -11,7 +11,7 @@ cv::Point findPos(const std::string& screenshotPath, const std::string& targetPa
     cv::Mat largeImage = cv::imread(screenshotPath, cv::IMREAD_COLOR);
     cv::Mat smallImage = cv::imread(targetPath, cv::IMREAD_COLOR);
     if (largeImage.empty() || smallImage.empty()) {
-        gLog.error("图像路径不存在");
+        gLog.error("Image path does not exist");
         return cv::Point(-1, -1);
     }
     
