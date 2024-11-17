@@ -2,6 +2,10 @@
 .cache
 .debug
 .vscode
+*.bat
+*.log
+*.pdb
+!compile.bat
 
 # Prerequisites
 *.d
